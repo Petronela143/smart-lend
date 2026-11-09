@@ -1,0 +1,1195 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smart Lend | Repayments</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #082b55;
+    color: white;
+    padding: 25px 15px;
+    overflow-y: auto;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    padding: 10px;
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 14px;
+    margin: 7px 0;
+    border-radius: 7px;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #1479e8;
+}
+
+.main {
+    margin-left: 250px;
+    padding: 25px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    font-size: 27px;
+}
+
+.admin {
+    background: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.summary-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.05);
+}
+
+.summary-card p {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.summary-card h2 {
+    color: #0759b5;
+    font-size: 22px;
+}
+
+.panel {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.04);
+}
+
+.panel h3 {
+    margin-bottom: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 17px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.field label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.field input,
+.field select,
+.field textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    background: white;
+    outline: none;
+}
+
+.field input:focus,
+.field select:focus {
+    border-color: #1479e8;
+}
+
+.field input[readonly] {
+    background: #f1f5f9;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+.balance-box {
+    background: #eff6ff;
+    border-radius: 9px;
+    padding: 18px;
+    margin-top: 20px;
+}
+
+.balance-box h4 {
+    color: #0759b5;
+    margin-bottom: 12px;
+}
+
+.balance-box p {
+    margin: 9px 0;
+    font-size: 14px;
+}
+
+.balance-box strong {
+    color: #0759b5;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+button {
+    border: none;
+    padding: 12px 18px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.save-btn {
+    background: #0866cc;
+    color: white;
+}
+
+.clear-btn {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.print-btn {
+    background: #dbeafe;
+    color: #1d4ed8;
+    padding: 8px 12px;
+}
+
+.search-box {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    margin-bottom: 15px;
+}
+
+.filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.filters select {
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    background: white;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 14px;
+}
+
+th {
+    background: #f8fafc;
+    color: #475569;
+}
+
+.status {
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.paid-status {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.partial-status {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.empty {
+    text-align: center;
+    padding: 25px;
+    color: #64748b;
+}
+
+#message {
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #15803d;
+}
+
+/* PRINT RECEIPT */
+
+#printReceipt {
+    display: none;
+}
+
+@media print {
+
+    body {
+        background: white;
+    }
+
+    body * {
+        visibility: hidden;
+    }
+
+    #printReceipt,
+    #printReceipt * {
+        visibility: visible;
+    }
+
+    #printReceipt {
+        display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 30px;
+        color: black;
+    }
+
+    .receipt {
+        max-width: 500px;
+        margin: auto;
+        border: 1px solid #ccc;
+        padding: 25px;
+    }
+
+    .receipt h2,
+    .receipt h3 {
+        text-align: center;
+        margin-bottom: 12px;
+    }
+
+    .receipt p {
+        margin: 12px 0;
+    }
+
+    .receipt hr {
+        margin: 15px 0;
+    }
+}
+
+@media(max-width: 1100px) {
+    .summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 700px) {
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .sidebar a {
+        display: inline-block;
+        padding: 10px;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .header h1 {
+        font-size: 21px;
+    }
+
+    .summary,
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full {
+        grid-column: auto;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="logo">💰 SMART LEND</div>
+
+    <a href="dashboard.html">📊 Dashboard</a>
+    <a href="customers.html">👥 Customers</a>
+    <a href="loans.html">💵 Loans</a>
+    <a href="repayments.html" class="active">💳 Repayments</a>
+    <a href="transactions.html">📑 Transactions</a>
+    <a href="reports.html">📈 Reports</a>
+    <a href="settings.html">⚙ Settings</a>
+    <a href="logout.html">🚪 Logout</a>
+
+</aside>
+
+<!-- MAIN CONTENT -->
+
+<main class="main">
+
+    <div class="header">
+        <h1>Repayments Management</h1>
+        <div class="admin">👤 Administrator</div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+
+    <div class="summary">
+
+        <div class="summary-card">
+            <p>Total Collections</p>
+            <h2 id="totalCollections">UGX 0</h2>
+        </div>
+
+        <div class="summary-card">
+            <p>Today's Collections</p>
+            <h2 id="todayCollections">UGX 0</h2>
+        </div>
+
+        <div class="summary-card">
+            <p>Total Transactions</p>
+            <h2 id="totalTransactions">0</h2>
+        </div>
+
+        <div class="summary-card">
+            <p>Outstanding Balance</p>
+            <h2 id="outstandingBalance">UGX 0</h2>
+        </div>
+
+    </div>
+
+    <!-- REPAYMENT FORM -->
+
+    <div class="panel">
+
+        <h3>Record New Repayment</h3>
+
+        <div id="message"></div>
+
+        <form id="repaymentForm">
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label>Receipt Number</label>
+                    <input type="text" id="receiptNumber" readonly>
+                </div>
+
+                <div class="field">
+                    <label>Customer *</label>
+                    <select id="customerId" required>
+                        <option value="">Select Customer</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Select Loan *</label>
+                    <select id="loanId" required disabled>
+                        <option value="">Select Customer First</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Outstanding Balance</label>
+                    <input type="text" id="outstanding" readonly
+                    value="UGX 0">
+                </div>
+
+                <div class="field">
+                    <label>Repayment Amount (UGX) *</label>
+                    <input type="number" id="amount" min="1"
+                    step="1" placeholder="Enter payment amount"
+                    required>
+                </div>
+
+                <div class="field">
+                    <label>Payment Date *</label>
+                    <input type="date" id="paymentDate" required>
+                </div>
+
+                <div class="field">
+                    <label>Payment Method *</label>
+                    <select id="paymentMethod" required>
+                        <option value="">Select Payment Method</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Mobile Money">Mobile Money</option>
+                        <option value="Airtel Money">Airtel Money</option>
+                        <option value="Bank">Bank Transfer</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Transaction Reference</label>
+                    <input type="text" id="transactionReference"
+                    placeholder="Optional payment reference">
+                </div>
+
+                <div class="field full">
+                    <label>Notes</label>
+                    <textarea id="notes" rows="3"
+                    placeholder="Additional payment information"></textarea>
+                </div>
+
+            </div>
+
+            <!-- BALANCE PREVIEW -->
+
+            <div class="balance-box">
+
+                <h4>Payment Summary</h4>
+
+                <p>Previous Balance:
+                    <strong id="previousBalance">UGX 0</strong>
+                </p>
+
+                <p>Payment Amount:
+                    <strong id="paymentPreview">UGX 0</strong>
+                </p>
+
+                <p>Remaining Balance:
+                    <strong id="remainingBalance">UGX 0</strong>
+                </p>
+
+            </div>
+
+            <div class="buttons">
+
+                <button type="submit" class="save-btn">
+                    Record Repayment
+                </button>
+
+                <button type="reset" class="clear-btn">
+                    Clear Form
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- REPAYMENT HISTORY -->
+
+    <div class="panel">
+
+        <h3>Repayment History</h3>
+
+        <input type="search"
+        id="searchPayment"
+        class="search-box"
+        placeholder="Search receipt, customer or loan ID...">
+
+        <div class="filters">
+
+            <select id="methodFilter">
+                <option value="All">All Payment Methods</option>
+                <option value="Cash">Cash</option>
+                <option value="Mobile Money">Mobile Money</option>
+                <option value="Airtel Money">Airtel Money</option>
+                <option value="Bank">Bank Transfer</option>
+            </select>
+
+        </div>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Receipt No.</th>
+                        <th>Customer</th>
+                        <th>Loan ID</th>
+                        <th>Amount Paid</th>
+                        <th>Payment Method</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="repaymentTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</main>
+
+<!-- PRINT RECEIPT AREA -->
+
+<div id="printReceipt"></div>
+
+<script>
+
+"use strict";
+
+// LOAD EXISTING RECORDS
+
+let customers = JSON.parse(
+    localStorage.getItem("smartLendCustomers") || "[]"
+);
+
+let loans = JSON.parse(
+    localStorage.getItem("smartLendLoans") || "[]"
+);
+
+let repayments = JSON.parse(
+    localStorage.getItem("smartLendRepayments") || "[]"
+);
+
+// DATE FUNCTION
+
+function today() {
+
+    const date = new Date();
+    const offset = date.getTimezoneOffset() * 60000;
+
+    return new Date(date.getTime() - offset)
+        .toISOString().slice(0, 10);
+}
+
+// CURRENCY FORMAT
+
+function money(amount) {
+
+    return "UGX " + Number(amount).toLocaleString("en-UG", {
+        maximumFractionDigits: 2
+    });
+
+}
+
+// ESCAPE HTML
+
+function escapeHTML(value) {
+
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[char]);
+
+}
+
+// SAVE DATA
+
+function saveData() {
+
+    localStorage.setItem(
+        "smartLendLoans",
+        JSON.stringify(loans)
+    );
+
+    localStorage.setItem(
+        "smartLendRepayments",
+        JSON.stringify(repayments)
+    );
+
+}
+
+// GENERATE RECEIPT NUMBER
+
+function generateReceiptNumber() {
+
+    const numbers = repayments.map(payment =>
+        Number(payment.id.replace("REC", ""))
+    );
+
+    const next = Math.max(0, ...numbers) + 1;
+
+    return "REC" + String(next).padStart(5, "0");
+
+}
+
+// LOAD CUSTOMERS
+
+function loadCustomers() {
+
+    const select = document.getElementById("customerId");
+
+    select.innerHTML =
+        '<option value="">Select Customer</option>';
+
+    customers.forEach(customer => {
+
+        const option = document.createElement("option");
+
+        option.value = customer.id;
+
+        option.textContent =
+            customer.fullName + " - " + customer.id;
+
+        select.appendChild(option);
+
+    });
+
+}
+
+// LOAD CUSTOMER LOANS
+
+function loadCustomerLoans() {
+
+    const customerId =
+        document.getElementById("customerId").value;
+
+    const select = document.getElementById("loanId");
+
+    select.innerHTML =
+        '<option value="">Select Loan</option>';
+
+    const customerLoans = loans.filter(loan =>
+        loan.customerId === customerId &&
+        Number(loan.balance) > 0
+    );
+
+    if (!customerId) {
+
+        select.disabled = true;
+
+        select.innerHTML =
+            '<option value="">Select Customer First</option>';
+
+    } else {
+
+        select.disabled = false;
+
+        customerLoans.forEach(loan => {
+
+            const option = document.createElement("option");
+
+            option.value = loan.id;
+
+            option.textContent =
+                loan.id + " - " + money(loan.balance);
+
+            select.appendChild(option);
+
+        });
+
+        if (customerLoans.length === 0) {
+
+            select.innerHTML =
+                '<option value="">No unpaid loans available</option>';
+
+        }
+
+    }
+
+    updatePaymentPreview();
+
+}
+
+// GET SELECTED LOAN
+
+function getSelectedLoan() {
+
+    const id = document.getElementById("loanId").value;
+
+    return loans.find(loan => loan.id === id);
+
+}
+
+// UPDATE PAYMENT PREVIEW
+
+function updatePaymentPreview() {
+
+    const loan = getSelectedLoan();
+
+    const amount =
+        Number(document.getElementById("amount").value) || 0;
+
+    const balance = loan
+        ? Number(loan.balance)
+        : 0;
+
+    const remaining = Math.max(0, balance - amount);
+
+    document.getElementById("outstanding").value =
+        money(balance);
+
+    document.getElementById("previousBalance").textContent =
+        money(balance);
+
+    document.getElementById("paymentPreview").textContent =
+        money(amount);
+
+    document.getElementById("remainingBalance").textContent =
+        money(remaining);
+
+}
+
+// LISTEN FOR CHANGES
+
+document.getElementById("customerId")
+.addEventListener("change", loadCustomerLoans);
+
+document.getElementById("loanId")
+.addEventListener("change", updatePaymentPreview);
+
+document.getElementById("amount")
+.addEventListener("input", updatePaymentPreview);
+
+// RECORD REPAYMENT
+
+document.getElementById("repaymentForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const customerId =
+        document.getElementById("customerId").value;
+
+    const loanId =
+        document.getElementById("loanId").value;
+
+    const customer = customers.find(
+        c => c.id === customerId
+    );
+
+    const loan = loans.find(
+        l => l.id === loanId
+    );
+
+    const amount =
+        Number(document.getElementById("amount").value);
+
+    const paymentDate =
+        document.getElementById("paymentDate").value;
+
+    const method =
+        document.getElementById("paymentMethod").value;
+
+    const reference =
+        document.getElementById("transactionReference")
+        .value.trim();
+
+    const notes =
+        document.getElementById("notes").value.trim();
+
+    // VALIDATION
+
+    if (!customer || !loan) {
+
+        alert("Please select a valid customer and loan.");
+
+        return;
+
+    }
+
+    if (loan.customerId !== customerId) {
+
+        alert("The selected loan does not belong to this customer.");
+
+        return;
+
+    }
+
+    if (
+        !Number.isSafeInteger(amount) ||
+        amount <= 0 ||
+        amount > Number(loan.balance)
+    ) {
+
+        alert(
+            "Enter a valid whole-number payment not exceeding " +
+            money(loan.balance)
+        );
+
+        return;
+
+    }
+
+    if (
+        !paymentDate ||
+        paymentDate > today() ||
+        !method
+    ) {
+
+        alert("Please enter a valid payment date and method.");
+
+        return;
+
+    }
+
+    // CREATE REPAYMENT RECORD
+
+    const repayment = {
+
+        id: generateReceiptNumber(),
+
+        loanId: loan.id,
+
+        customerId: customer.id,
+
+        customerName: customer.fullName,
+
+        amount: amount,
+
+        method: method,
+
+        reference: reference,
+
+        notes: notes,
+
+        date: paymentDate,
+
+        recordedAt: new Date().toISOString()
+
+    };
+
+    // CONFIRM PAYMENT
+
+    const confirmed = confirm(
+
+        "Confirm repayment?\n\n" +
+
+        "Customer: " + customer.fullName + "\n" +
+
+        "Loan: " + loan.id + "\n" +
+
+        "Amount: " + money(amount) + "\n" +
+
+        "Method: " + method
+
+    );
+
+    if (!confirmed) return;
+
+    // UPDATE LOAN BALANCE
+
+    loan.amountPaid =
+        Number(loan.amountPaid || 0) + amount;
+
+    loan.balance =
+        Math.max(0, Number(loan.balance) - amount);
+
+    loan.status =
+        loan.balance === 0 ? "Paid" : "Active";
+
+    // SAVE REPAYMENT
+
+    repayments.push(repayment);
+
+    saveData();
+
+    // UPDATE PAGE
+
+    alert(
+        "Repayment recorded successfully!\nReceipt: " +
+        repayment.id
+    );
+
+    this.reset();
+
+    document.getElementById("paymentDate").value = today();
+
+    document.getElementById("receiptNumber").value =
+        generateReceiptNumber();
+
+    loadCustomerLoans();
+
+    displayRepayments();
+
+    updatePaymentPreview();
+
+    // PRINT THE RECEIPT
+
+    printReceipt(repayment.id);
+
+});
+
+// DISPLAY REPAYMENT RECORDS
+
+function displayRepayments() {
+
+    const search =
+        document.getElementById("searchPayment")
+        .value.toLowerCase();
+
+    const method =
+        document.getElementById("methodFilter").value;
+
+    const filtered = [...repayments].reverse().filter(payment => {
+
+        const text = [
+            payment.id,
+            payment.loanId,
+            payment.customerName
+        ].join(" ").toLowerCase();
+
+        return text.includes(search) &&
+            (method === "All" || payment.method === method);
+
+    });
+
+    const table = document.getElementById("repaymentTable");
+
+    if (filtered.length === 0) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="7" class="empty">
+                    No repayment records found.
+                </td>
+            </tr>
+        `;
+
+    } else {
+
+        table.innerHTML = filtered.map(payment => `
+
+            <tr>
+
+                <td>${escapeHTML(payment.id)}</td>
+
+                <td>${escapeHTML(payment.customerName)}</td>
+
+                <td>${escapeHTML(payment.loanId)}</td>
+
+                <td>${money(payment.amount)}</td>
+
+                <td>${escapeHTML(payment.method)}</td>
+
+                <td>${escapeHTML(payment.date)}</td>
+
+                <td>
+                    <button class="print-btn"
+                    onclick="printReceipt('${payment.id}')">
+                        Print Receipt
+                    </button>
+                </td>
+
+            </tr>
+
+        `).join("");
+
+    }
+
+    updateSummary();
+
+}
+
+// UPDATE SUMMARY CARDS
+
+function updateSummary() {
+
+    const total = repayments.reduce(
+        (sum, payment) => sum + Number(payment.amount), 0
+    );
+
+    const todayTotal = repayments
+        .filter(payment => payment.date === today())
+        .reduce((sum, payment) =>
+            sum + Number(payment.amount), 0
+        );
+
+    const outstanding = loans.reduce(
+        (sum, loan) => sum + Number(loan.balance), 0
+    );
+
+    document.getElementById("totalCollections").textContent =
+        money(total);
+
+    document.getElementById("todayCollections").textContent =
+        money(todayTotal);
+
+    document.getElementById("totalTransactions").textContent =
+        repayments.length;
+
+    document.getElementById("outstandingBalance").textContent =
+        money(outstanding);
+
+}
+
+// PRINT PAYMENT RECEIPT
+
+function printReceipt(id) {
+
+    const payment = repayments.find(
+        p => p.id === id
+    );
+
+    if (!payment) return;
+
+    const loan = loans.find(
+        l => l.id === payment.loanId
+    );
+
+    const remaining = loan
+        ? Number(loan.balance)
+        : 0;
+
+    const receipt = document.getElementById("printReceipt");
+
+    receipt.innerHTML = `
+
+        <div class="receipt">
+
+            <h2>SMART LEND</h2>
+
+            <h3>PAYMENT RECEIPT</h3>
+
+            <hr>
+
+            <p><strong>Receipt Number:</strong>
+            ${escapeHTML(payment.id)}</p>
+
+            <p><strong>Date:</strong>
+            ${escapeHTML(payment.date)}</p>
+
+            <p><strong>Customer:</strong>
+            ${escapeHTML(payment.customerName)}</p>
+
+            <p><strong>Loan Reference:</strong>
+            ${escapeHTML(payment.loanId)}</p>
+
+            <hr>
+
+            <p><strong>Amount Received:</strong></p>
+
+            <h2>${money(payment.amount)}</h2>
+
+            <p><strong>Payment Method:</strong>
+            ${escapeHTML(payment.method)}</p>
+
+            <p><strong>Transaction Reference:</strong>
+            ${escapeHTML(payment.reference || "N/A")}</p>
+
+            <p><strong>Remaining Loan Balance:</strong>
+            ${money(remaining)}</p>
+
+            <hr>
+
+            <h3>Thank you for your payment!</h3>
+
+            <p style="text-align:center">
+                SMART LEND - Payment Acknowledgement
+            </p>
+
+        </div>
+
+    `;
+
+    window.print();
+
+}
+
+// SEARCH REPAYMENTS
+
+document.getElementById("searchPayment")
+.addEventListener("input", displayRepayments);
+
+document.getElementById("methodFilter")
+.addEventListener("change", displayRepayments);
+
+// RESET FORM
+
+document.getElementById("repaymentForm")
+.addEventListener("reset", function() {
+
+    setTimeout(() => {
+
+        document.getElementById("receiptNumber").value =
+            generateReceiptNumber();
+
+        document.getElementById("paymentDate").value = today();
+
+        document.getElementById("loanId").disabled = true;
+
+        document.getElementById("loanId").innerHTML =
+            '<option value="">Select Customer First</option>';
+
+        updatePaymentPreview();
+
+    }, 0);
+
+});
+
+// INITIALIZE PAGE
+
+document.getElementById("receiptNumber").value =
+    generateReceiptNumber();
+
+document.getElementById("paymentDate").value = today();
+
+loadCustomers();
+
+displayRepayments();
+
+updatePaymentPreview();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,789 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Lend | Customers</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    background: #082b55;
+    color: white;
+    padding: 25px 15px;
+    overflow-y: auto;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    padding: 10px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 14px;
+    margin: 7px 0;
+    border-radius: 7px;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #1479e8;
+}
+
+.main {
+    margin-left: 250px;
+    padding: 25px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    font-size: 27px;
+}
+
+.admin {
+    background: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.summary-card {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.05);
+}
+
+.summary-card p {
+    color: #64748b;
+    margin-bottom: 12px;
+}
+
+.summary-card h2 {
+    color: #0759b5;
+    font-size: 26px;
+}
+
+.panel {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.04);
+}
+
+.panel h3 {
+    margin-bottom: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 17px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.field label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.field input,
+.field select,
+.field textarea {
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    outline: none;
+    width: 100%;
+    background: white;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+    border-color: #1479e8;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+button {
+    border: none;
+    padding: 12px 18px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.save-btn {
+    background: #0866cc;
+    color: white;
+}
+
+.cancel-btn {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.edit-btn {
+    background: #dbeafe;
+    color: #1d4ed8;
+    padding: 8px 12px;
+}
+
+.delete-btn {
+    background: #fee2e2;
+    color: #dc2626;
+    padding: 8px 12px;
+}
+
+.search-box {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    margin-bottom: 20px;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px;
+}
+
+th, td {
+    padding: 14px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+    font-size: 14px;
+}
+
+th {
+    background: #f8fafc;
+    color: #475569;
+}
+
+.actions {
+    display: flex;
+    gap: 7px;
+}
+
+.empty {
+    text-align: center;
+    color: #64748b;
+    padding: 25px;
+}
+
+.message {
+    margin-bottom: 15px;
+    color: #15803d;
+    font-weight: bold;
+}
+
+@media(max-width: 900px) {
+    .summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 700px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .sidebar a {
+        display: inline-block;
+        padding: 10px;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .header h1 {
+        font-size: 21px;
+    }
+
+    .summary,
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full {
+        grid-column: auto;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+    <div class="logo">💰 SMART LEND</div>
+
+    <a href="dashboard.html">📊 Dashboard</a>
+    <a href="customers.html" class="active">👥 Customers</a>
+    <a href="loans.html">💵 Loans</a>
+    <a href="repayments.html">💳 Repayments</a>
+    <a href="transactions.html">📑 Transactions</a>
+    <a href="reports.html">📈 Reports</a>
+    <a href="settings.html">⚙ Settings</a>
+    <a href="logout.html">🚪 Logout</a>
+
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+    <div class="header">
+        <h1>Customer Management</h1>
+        <div class="admin">👤 Administrator</div>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="summary">
+
+        <div class="summary-card">
+            <p>Total Customers</p>
+            <h2 id="totalCustomers">0</h2>
+        </div>
+
+        <div class="summary-card">
+            <p>Customers With Loans</p>
+            <h2 id="loanCustomers">0</h2>
+        </div>
+
+        <div class="summary-card">
+            <p>Registered Today</p>
+            <h2 id="todayCustomers">0</h2>
+        </div>
+
+    </div>
+
+    <!-- CUSTOMER FORM -->
+    <div class="panel">
+
+        <h3 id="formTitle">Register New Customer</h3>
+
+        <div id="message" class="message"></div>
+
+        <form id="customerForm">
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label>Customer ID</label>
+                    <input type="text" id="customerId" readonly>
+                </div>
+
+                <div class="field">
+                    <label>Full Name *</label>
+                    <input type="text" id="fullName"
+                    placeholder="Enter full name" required>
+                </div>
+
+                <div class="field">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="phone"
+                    placeholder="e.g. 0771234567" required>
+                </div>
+
+                <div class="field">
+                    <label>National ID Number</label>
+                    <input type="text" id="nationalId"
+                    placeholder="Enter National ID">
+                </div>
+
+                <div class="field">
+                    <label>Gender</label>
+                    <select id="gender">
+                        <option value="">Select Gender</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Date of Birth</label>
+                    <input type="date" id="dob">
+                </div>
+
+                <div class="field">
+                    <label>Occupation</label>
+                    <input type="text" id="occupation"
+                    placeholder="Enter occupation">
+                </div>
+
+                <div class="field">
+                    <label>Place of Residence</label>
+                    <input type="text" id="address"
+                    placeholder="Enter residential address">
+                </div>
+
+                <div class="field">
+                    <label>Next of Kin</label>
+                    <input type="text" id="nextOfKin"
+                    placeholder="Next of kin name">
+                </div>
+
+                <div class="field">
+                    <label>Next of Kin Phone</label>
+                    <input type="tel" id="kinPhone"
+                    placeholder="Next of kin contact">
+                </div>
+
+                <div class="field full">
+                    <label>Additional Notes</label>
+                    <textarea id="notes" rows="3"
+                    placeholder="Additional customer information"></textarea>
+                </div>
+
+            </div>
+
+            <div class="buttons">
+
+                <button type="submit" class="save-btn"
+                id="saveButton">
+                    Save Customer
+                </button>
+
+                <button type="button" class="cancel-btn"
+                id="cancelButton" onclick="resetForm()">
+                    Clear Form
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- CUSTOMER RECORDS -->
+    <div class="panel">
+
+        <h3>Registered Customers</h3>
+
+        <input
+            type="search"
+            id="searchCustomer"
+            class="search-box"
+            placeholder="Search by name, ID or phone number..."
+        >
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Full Name</th>
+                        <th>Phone</th>
+                        <th>National ID</th>
+                        <th>Occupation</th>
+                        <th>Residence</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="customerTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</main>
+
+<script>
+
+"use strict";
+
+// CUSTOMER DATABASE
+// Browser storage for this prototype.
+
+let customers = JSON.parse(
+    localStorage.getItem("smartLendCustomers") || "[]"
+);
+
+let editingId = null;
+
+// GET TODAY'S DATE
+function today() {
+    const d = new Date();
+    const offset = d.getTimezoneOffset() * 60000;
+    return new Date(d.getTime() - offset)
+        .toISOString().slice(0, 10);
+}
+
+// GENERATE CUSTOMER ID
+function generateId() {
+
+    const numbers = customers.map(customer =>
+        Number(customer.id.replace("CUS", ""))
+    );
+
+    const next = Math.max(0, ...numbers) + 1;
+
+    return "CUS" + String(next).padStart(4, "0");
+}
+
+// SAVE DATA
+function saveDatabase() {
+    localStorage.setItem(
+        "smartLendCustomers",
+        JSON.stringify(customers)
+    );
+}
+
+// DISPLAY CUSTOMERS
+function displayCustomers(search = "") {
+
+    const table = document.getElementById("customerTable");
+
+    const filtered = customers.filter(customer => {
+
+        const text = [
+            customer.id,
+            customer.fullName,
+            customer.phone,
+            customer.nationalId
+        ].join(" ").toLowerCase();
+
+        return text.includes(search.toLowerCase());
+
+    });
+
+    if (filtered.length === 0) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="7" class="empty">
+                    No customer records found.
+                </td>
+            </tr>
+        `;
+
+    } else {
+
+        table.innerHTML = filtered.map(customer => `
+
+            <tr>
+                <td>${escapeHTML(customer.id)}</td>
+                <td>${escapeHTML(customer.fullName)}</td>
+                <td>${escapeHTML(customer.phone)}</td>
+                <td>${escapeHTML(customer.nationalId || "-")}</td>
+                <td>${escapeHTML(customer.occupation || "-")}</td>
+                <td>${escapeHTML(customer.address || "-")}</td>
+
+                <td>
+                    <div class="actions">
+
+                        <button class="edit-btn"
+                        onclick="editCustomer('${customer.id}')">
+                            Edit
+                        </button>
+
+                        <button class="delete-btn"
+                        onclick="deleteCustomer('${customer.id}')">
+                            Delete
+                        </button>
+
+                    </div>
+                </td>
+            </tr>
+
+        `).join("");
+
+    }
+
+    updateSummary();
+}
+
+// ESCAPE USER INPUT BEFORE DISPLAYING
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[char]);
+}
+
+// UPDATE SUMMARY
+function updateSummary() {
+
+    document.getElementById("totalCustomers").textContent =
+        customers.length;
+
+    // Placeholder until the loans module is connected.
+    document.getElementById("loanCustomers").textContent =
+        new Set(
+            JSON.parse(localStorage.getItem("smartLendLoans") || "[]")
+                .filter(loan => Number(loan.balance) > 0)
+                .map(loan => loan.customerId)
+        ).size;
+
+    document.getElementById("todayCustomers").textContent =
+        customers.filter(customer =>
+            customer.createdAt === today()
+        ).length;
+
+}
+
+// CLEAR FORM
+function resetForm() {
+
+    document.getElementById("customerForm").reset();
+
+    editingId = null;
+
+    document.getElementById("customerId").value =
+        generateId();
+
+    document.getElementById("formTitle").textContent =
+        "Register New Customer";
+
+    document.getElementById("saveButton").textContent =
+        "Save Customer";
+
+}
+
+// REGISTER OR UPDATE CUSTOMER
+document.getElementById("customerForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const customer = {
+
+        id: editingId || generateId(),
+
+        fullName: document.getElementById("fullName").value.trim(),
+
+        phone: document.getElementById("phone").value.trim(),
+
+        nationalId: document.getElementById("nationalId").value.trim(),
+
+        gender: document.getElementById("gender").value,
+
+        dob: document.getElementById("dob").value,
+
+        occupation: document.getElementById("occupation").value.trim(),
+
+        address: document.getElementById("address").value.trim(),
+
+        nextOfKin: document.getElementById("nextOfKin").value.trim(),
+
+        kinPhone: document.getElementById("kinPhone").value.trim(),
+
+        notes: document.getElementById("notes").value.trim(),
+
+        createdAt: editingId
+            ? customers.find(c => c.id === editingId).createdAt
+            : today()
+
+    };
+
+    // CHECK DUPLICATE PHONE NUMBER
+    const duplicate = customers.find(c =>
+        c.phone === customer.phone &&
+        c.id !== editingId
+    );
+
+    if (duplicate) {
+        alert("This phone number is already registered.");
+        return;
+    }
+
+    if (editingId) {
+
+        const index = customers.findIndex(
+            c => c.id === editingId
+        );
+
+        customers[index] = customer;
+
+        showMessage("Customer updated successfully!");
+
+    } else {
+
+        customers.push(customer);
+
+        showMessage("Customer registered successfully!");
+
+    }
+
+    saveDatabase();
+
+    displayCustomers(
+        document.getElementById("searchCustomer").value
+    );
+
+    resetForm();
+
+});
+
+// EDIT CUSTOMER
+function editCustomer(id) {
+
+    const customer = customers.find(c => c.id === id);
+
+    if (!customer) return;
+
+    editingId = id;
+
+    document.getElementById("customerId").value = customer.id;
+
+    document.getElementById("fullName").value = customer.fullName;
+
+    document.getElementById("phone").value = customer.phone;
+
+    document.getElementById("nationalId").value = customer.nationalId;
+
+    document.getElementById("gender").value = customer.gender;
+
+    document.getElementById("dob").value = customer.dob;
+
+    document.getElementById("occupation").value = customer.occupation;
+
+    document.getElementById("address").value = customer.address;
+
+    document.getElementById("nextOfKin").value = customer.nextOfKin;
+
+    document.getElementById("kinPhone").value = customer.kinPhone;
+
+    document.getElementById("notes").value = customer.notes;
+
+    document.getElementById("formTitle").textContent =
+        "Edit Customer Details";
+
+    document.getElementById("saveButton").textContent =
+        "Update Customer";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+// DELETE CUSTOMER
+function deleteCustomer(id) {
+
+    const customer = customers.find(c => c.id === id);
+
+    if (!customer) return;
+
+    const confirmed = confirm(
+        "Are you sure you want to delete " +
+        customer.fullName + "?"
+    );
+
+    if (!confirmed) return;
+
+    customers = customers.filter(c => c.id !== id);
+
+    saveDatabase();
+
+    displayCustomers(
+        document.getElementById("searchCustomer").value
+    );
+
+    resetForm();
+
+    showMessage("Customer deleted successfully!");
+
+}
+
+// SEARCH CUSTOMERS
+document.getElementById("searchCustomer")
+.addEventListener("input", function() {
+
+    displayCustomers(this.value);
+
+});
+
+// MESSAGE
+function showMessage(message) {
+
+    const element = document.getElementById("message");
+
+    element.textContent = message;
+
+    setTimeout(() => {
+        element.textContent = "";
+    }, 3000);
+
+}
+
+// INITIALIZE PAGE
+document.getElementById("customerId").value =
+    generateId();
+
+displayCustomers();
+
+</script>
+
+</body>
+</html>

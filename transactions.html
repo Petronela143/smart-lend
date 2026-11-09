@@ -1,0 +1,878 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smart Lend | Transactions</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #082b55;
+    color: white;
+    padding: 25px 15px;
+    overflow-y: auto;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    padding: 10px;
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 14px;
+    margin: 7px 0;
+    border-radius: 7px;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #1479e8;
+}
+
+.main {
+    margin-left: 250px;
+    padding: 25px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    font-size: 27px;
+}
+
+.admin {
+    background: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.summary-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.05);
+}
+
+.summary-card p {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.summary-card h2 {
+    color: #0759b5;
+    font-size: 22px;
+}
+
+.panel {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.04);
+}
+
+.panel h3 {
+    margin-bottom: 20px;
+}
+
+.filters {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.filters input,
+.filters select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    background: white;
+    outline: none;
+}
+
+.filters input:focus,
+.filters select:focus {
+    border-color: #1479e8;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+button {
+    border: none;
+    padding: 12px 18px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.export-btn {
+    background: #0866cc;
+    color: white;
+}
+
+.print-btn {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.reset-btn {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 950px;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 14px;
+}
+
+th {
+    background: #f8fafc;
+    color: #475569;
+}
+
+.income {
+    color: #15803d;
+    font-weight: bold;
+}
+
+.expense {
+    color: #dc2626;
+    font-weight: bold;
+}
+
+.type {
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.disbursement {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.repayment {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.empty {
+    text-align: center;
+    padding: 25px;
+    color: #64748b;
+}
+
+.footer {
+    color: #64748b;
+    font-size: 13px;
+    margin-top: 15px;
+}
+
+@media(max-width: 1100px) {
+    .summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filters {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 700px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .sidebar a {
+        display: inline-block;
+        padding: 10px;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .header h1 {
+        font-size: 21px;
+    }
+
+    .summary,
+    .filters {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media print {
+    .sidebar,
+    .buttons,
+    .filters,
+    .admin {
+        display: none !important;
+    }
+
+    .main {
+        margin: 0;
+        padding: 10px;
+    }
+
+    body {
+        background: white;
+    }
+
+    .panel,
+    .summary-card {
+        box-shadow: none;
+    }
+
+    table {
+        min-width: 0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="logo">💰 SMART LEND</div>
+
+    <a href="dashboard.html">📊 Dashboard</a>
+    <a href="customers.html">👥 Customers</a>
+    <a href="loans.html">💵 Loans</a>
+    <a href="repayments.html">💳 Repayments</a>
+    <a href="transactions.html" class="active">📑 Transactions</a>
+    <a href="reports.html">📈 Reports</a>
+    <a href="settings.html">⚙ Settings</a>
+    <a href="logout.html">🚪 Logout</a>
+
+</aside>
+
+<!-- MAIN CONTENT -->
+
+<main class="main">
+
+    <div class="header">
+        <h1>Financial Transactions</h1>
+        <div class="admin">👤 Administrator</div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+
+    <div class="summary">
+
+        <div class="summary-card">
+            <p>Total Disbursements</p>
+            <h2 id="totalDisbursed">UGX 0</h2>
+        </div>
+
+        <div class="summary-card">
+            <p>Total Collections</p>
+            <h2 id="totalCollected">UGX 0</h2>
+        </div>
+
+        <div class="summary-card">
+            <p>Net Cash Movement</p>
+            <h2 id="netCash">UGX 0</h2>
+        </div>
+
+        <div class="summary-card">
+            <p>Total Transactions</p>
+            <h2 id="transactionCount">0</h2>
+        </div>
+
+    </div>
+
+    <!-- TRANSACTION RECORDS -->
+
+    <div class="panel">
+
+        <h3>All Financial Transactions</h3>
+
+        <!-- FILTERS -->
+
+        <div class="filters">
+
+            <input
+                type="search"
+                id="search"
+                placeholder="Search customer, loan or reference..."
+            >
+
+            <select id="typeFilter">
+                <option value="All">All Transaction Types</option>
+                <option value="Disbursement">Loan Disbursements</option>
+                <option value="Repayment">Customer Repayments</option>
+            </select>
+
+            <select id="methodFilter">
+                <option value="All">All Payment Methods</option>
+                <option value="Cash">Cash</option>
+                <option value="Mobile Money">Mobile Money</option>
+                <option value="Airtel Money">Airtel Money</option>
+                <option value="Bank">Bank Transfer</option>
+                <option value="Loan Disbursement">Loan Disbursement</option>
+            </select>
+
+            <input type="date" id="startDate" title="Start date">
+
+            <input type="date" id="endDate" title="End date">
+
+        </div>
+
+        <!-- ACTION BUTTONS -->
+
+        <div class="buttons">
+
+            <button class="export-btn" onclick="exportCSV()">
+                ↓ Export CSV
+            </button>
+
+            <button class="print-btn" onclick="window.print()">
+                🖨 Print Report
+            </button>
+
+            <button class="reset-btn" onclick="resetFilters()">
+                Reset Filters
+            </button>
+
+        </div>
+
+        <!-- TRANSACTION TABLE -->
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>Date</th>
+                        <th>Customer</th>
+                        <th>Loan Reference</th>
+                        <th>Transaction Type</th>
+                        <th>Payment Method</th>
+                        <th>Money Out</th>
+                        <th>Money In</th>
+                    </tr>
+                </thead>
+
+                <tbody id="transactionTable"></tbody>
+
+            </table>
+
+        </div>
+
+        <p class="footer" id="recordCount">
+            Showing 0 transactions
+        </p>
+
+    </div>
+
+</main>
+
+<script>
+
+"use strict";
+
+// LOAD DATABASE RECORDS
+
+let loans = JSON.parse(
+    localStorage.getItem("smartLendLoans") || "[]"
+);
+
+let repayments = JSON.parse(
+    localStorage.getItem("smartLendRepayments") || "[]"
+);
+
+// CURRENCY FORMAT
+
+function money(amount) {
+
+    return "UGX " + Number(amount).toLocaleString("en-UG", {
+        maximumFractionDigits: 2
+    });
+
+}
+
+// ESCAPE HTML
+
+function escapeHTML(value) {
+
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[char]);
+
+}
+
+// BUILD TRANSACTION LEDGER
+
+function buildTransactions() {
+
+    const transactions = [];
+
+    // LOAN DISBURSEMENTS
+
+    loans.forEach(loan => {
+
+        transactions.push({
+
+            id: "DIS-" + loan.id,
+
+            date: loan.issueDate,
+
+            customer: loan.customerName,
+
+            loanId: loan.id,
+
+            type: "Disbursement",
+
+            method: "Loan Disbursement",
+
+            moneyOut: Number(loan.principal),
+
+            moneyIn: 0
+
+        });
+
+    });
+
+    // CUSTOMER REPAYMENTS
+
+    repayments.forEach(payment => {
+
+        transactions.push({
+
+            id: payment.id,
+
+            date: payment.date,
+
+            customer: payment.customerName,
+
+            loanId: payment.loanId,
+
+            type: "Repayment",
+
+            method: payment.method,
+
+            moneyOut: 0,
+
+            moneyIn: Number(payment.amount)
+
+        });
+
+    });
+
+    // SORT NEWEST FIRST
+
+    transactions.sort((a, b) => {
+
+        const dateCompare = b.date.localeCompare(a.date);
+
+        if (dateCompare !== 0) return dateCompare;
+
+        return b.id.localeCompare(a.id);
+
+    });
+
+    return transactions;
+
+}
+
+// UPDATE SUMMARY
+
+function updateSummary(transactions) {
+
+    const disbursed = transactions.reduce(
+        (sum, transaction) =>
+            sum + transaction.moneyOut, 0
+    );
+
+    const collected = transactions.reduce(
+        (sum, transaction) =>
+            sum + transaction.moneyIn, 0
+    );
+
+    const net = collected - disbursed;
+
+    document.getElementById("totalDisbursed").textContent =
+        money(disbursed);
+
+    document.getElementById("totalCollected").textContent =
+        money(collected);
+
+    document.getElementById("netCash").textContent =
+        money(net);
+
+    document.getElementById("netCash").style.color =
+        net >= 0 ? "#15803d" : "#dc2626";
+
+    document.getElementById("transactionCount").textContent =
+        transactions.length;
+
+}
+
+// FILTER TRANSACTIONS
+
+function filterTransactions() {
+
+    // REFRESH DATABASE DATA
+
+    loans = JSON.parse(
+        localStorage.getItem("smartLendLoans") || "[]"
+    );
+
+    repayments = JSON.parse(
+        localStorage.getItem("smartLendRepayments") || "[]"
+    );
+
+    const transactions = buildTransactions();
+
+    const search = document.getElementById("search")
+        .value.toLowerCase().trim();
+
+    const type = document.getElementById("typeFilter").value;
+
+    const method = document.getElementById("methodFilter").value;
+
+    const startDate = document.getElementById("startDate").value;
+
+    const endDate = document.getElementById("endDate").value;
+
+    const filtered = transactions.filter(transaction => {
+
+        const searchText = [
+
+            transaction.id,
+            transaction.customer,
+            transaction.loanId,
+            transaction.method,
+            transaction.type
+
+        ].join(" ").toLowerCase();
+
+        const matchesSearch =
+            searchText.includes(search);
+
+        const matchesType =
+            type === "All" || transaction.type === type;
+
+        const matchesMethod =
+            method === "All" || transaction.method === method;
+
+        const matchesStart =
+            !startDate || transaction.date >= startDate;
+
+        const matchesEnd =
+            !endDate || transaction.date <= endDate;
+
+        return matchesSearch &&
+            matchesType &&
+            matchesMethod &&
+            matchesStart &&
+            matchesEnd;
+
+    });
+
+    displayTransactions(filtered);
+
+    // SUMMARY USES ALL TRANSACTIONS, NOT JUST FILTERED ONES
+
+    updateSummary(transactions);
+
+}
+
+// DISPLAY TRANSACTION TABLE
+
+function displayTransactions(transactions) {
+
+    const table = document.getElementById("transactionTable");
+
+    if (transactions.length === 0) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty">
+                    No transactions found.
+                </td>
+            </tr>
+        `;
+
+    } else {
+
+        table.innerHTML = transactions.map(transaction => {
+
+            const typeClass =
+                transaction.type === "Disbursement"
+                ? "disbursement"
+                : "repayment";
+
+            return `
+
+                <tr>
+
+                    <td>${escapeHTML(transaction.id)}</td>
+
+                    <td>${escapeHTML(transaction.date)}</td>
+
+                    <td>${escapeHTML(transaction.customer)}</td>
+
+                    <td>${escapeHTML(transaction.loanId)}</td>
+
+                    <td>
+                        <span class="type ${typeClass}">
+                            ${transaction.type}
+                        </span>
+                    </td>
+
+                    <td>${escapeHTML(transaction.method)}</td>
+
+                    <td class="expense">
+                        ${transaction.moneyOut > 0
+                            ? money(transaction.moneyOut)
+                            : "-"}
+                    </td>
+
+                    <td class="income">
+                        ${transaction.moneyIn > 0
+                            ? money(transaction.moneyIn)
+                            : "-"}
+                    </td>
+
+                </tr>
+
+            `;
+
+        }).join("");
+
+    }
+
+    document.getElementById("recordCount").textContent =
+        "Showing " + transactions.length + " transactions";
+
+}
+
+// EXPORT CSV
+
+function exportCSV() {
+
+    const transactions = getFilteredTransactions();
+
+    if (transactions.length === 0) {
+
+        alert("There are no transactions to export.");
+
+        return;
+
+    }
+
+    const headers = [
+
+        "Transaction ID",
+        "Date",
+        "Customer",
+        "Loan Reference",
+        "Transaction Type",
+        "Payment Method",
+        "Money Out",
+        "Money In"
+
+    ];
+
+    const rows = transactions.map(transaction => [
+
+        transaction.id,
+        transaction.date,
+        transaction.customer,
+        transaction.loanId,
+        transaction.type,
+        transaction.method,
+        transaction.moneyOut,
+        transaction.moneyIn
+
+    ]);
+
+    function csvCell(value) {
+
+        let text = String(value ?? "");
+
+        // Protect spreadsheet software from formula injection.
+
+        if (/^[=+\-@\t\r]/.test(text)) {
+            text = "'" + text;
+        }
+
+        return '"' + text.replace(/"/g, '""') + '"';
+
+    }
+
+    const csv = [headers, ...rows]
+        .map(row => row.map(csvCell).join(","))
+        .join("\r\n");
+
+    const blob = new Blob(
+        ["\uFEFF" + csv],
+        { type: "text/csv;charset=utf-8;" }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+
+    link.download = "Smart_Lend_Transactions.csv";
+
+    link.click();
+
+    URL.revokeObjectURL(url);
+
+}
+
+// GET FILTERED TRANSACTIONS
+
+function getFilteredTransactions() {
+
+    const search = document.getElementById("search")
+        .value.toLowerCase().trim();
+
+    const type = document.getElementById("typeFilter").value;
+
+    const method = document.getElementById("methodFilter").value;
+
+    const startDate = document.getElementById("startDate").value;
+
+    const endDate = document.getElementById("endDate").value;
+
+    return buildTransactions().filter(transaction => {
+
+        const searchText = [
+
+            transaction.id,
+            transaction.customer,
+            transaction.loanId,
+            transaction.method,
+            transaction.type
+
+        ].join(" ").toLowerCase();
+
+        return searchText.includes(search) &&
+            (type === "All" || transaction.type === type) &&
+            (method === "All" || transaction.method === method) &&
+            (!startDate || transaction.date >= startDate) &&
+            (!endDate || transaction.date <= endDate);
+
+    });
+
+}
+
+// RESET FILTERS
+
+function resetFilters() {
+
+    document.getElementById("search").value = "";
+
+    document.getElementById("typeFilter").value = "All";
+
+    document.getElementById("methodFilter").value = "All";
+
+    document.getElementById("startDate").value = "";
+
+    document.getElementById("endDate").value = "";
+
+    filterTransactions();
+
+}
+
+// LISTEN FOR FILTER CHANGES
+
+[
+    "search",
+    "typeFilter",
+    "methodFilter",
+    "startDate",
+    "endDate"
+].forEach(id => {
+
+    document.getElementById(id)
+    .addEventListener(
+        id === "search" ? "input" : "change",
+        filterTransactions
+    );
+
+});
+
+// INITIALIZE
+
+filterTransactions();
+
+</script>
+
+</body>
+</html>

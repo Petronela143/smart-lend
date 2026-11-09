@@ -1,0 +1,904 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Lend | Reports</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+:root {
+    --primary: #123c69;
+    --secondary: #0878d1;
+    --light: #f3f6fb;
+    --white: #ffffff;
+    --dark: #172b4d;
+    --green: #16a36a;
+    --red: #dc3545;
+    --orange: #f39c12;
+}
+
+body {
+    background: var(--light);
+    color: var(--dark);
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 245px;
+    background: var(--primary);
+    color: white;
+    padding: 25px 18px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    overflow-y: auto;
+}
+
+.logo {
+    font-size: 23px;
+    font-weight: 700;
+    margin-bottom: 35px;
+}
+
+.logo span {
+    color: #55b8ff;
+}
+
+.sidebar a {
+    display: block;
+    text-decoration: none;
+    color: #dce8f5;
+    padding: 13px 15px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #0878d1;
+    color: white;
+}
+
+.main {
+    margin-left: 245px;
+    padding: 30px;
+    width: calc(100% - 245px);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    font-size: 25px;
+}
+
+.header p {
+    color: #718096;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+button {
+    border: none;
+    padding: 11px 17px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.primary-btn {
+    background: var(--secondary);
+    color: white;
+}
+
+.dark-btn {
+    background: var(--primary);
+    color: white;
+}
+
+.filter-box {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 22px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 15px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.04);
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 150px;
+}
+
+.filter-group label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 7px;
+    color: #64748b;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #dce3ec;
+    border-radius: 7px;
+    outline: none;
+    background: white;
+}
+
+input:focus, select:focus {
+    border-color: var(--secondary);
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 17px;
+    margin-bottom: 22px;
+}
+
+.summary-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.04);
+}
+
+.summary-card p {
+    font-size: 12px;
+    color: #718096;
+    margin-bottom: 12px;
+}
+
+.summary-card h2 {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.blue { border-left: 4px solid #0878d1; }
+.green { border-left: 4px solid var(--green); }
+.orange { border-left: 4px solid var(--orange); }
+.red { border-left: 4px solid var(--red); }
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.panel {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.04);
+    min-width: 0;
+}
+
+.panel h3 {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.chart {
+    height: 220px;
+    display: flex;
+    align-items: end;
+    justify-content: space-around;
+    gap: 12px;
+    padding: 15px 5px 0;
+    border-bottom: 1px solid #e5eaf1;
+}
+
+.bar-item {
+    flex: 1;
+    max-width: 65px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: center;
+    gap: 8px;
+}
+
+.bar {
+    width: 65%;
+    min-height: 3px;
+    background: #0878d1;
+    border-radius: 6px 6px 0 0;
+    position: relative;
+}
+
+.bar.collection {
+    background: #16a36a;
+}
+
+.bar-label {
+    font-size: 10px;
+    color: #718096;
+    text-align: center;
+}
+
+.chart-legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+    font-size: 11px;
+    color: #64748b;
+}
+
+.dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid #edf0f5;
+    font-size: 13px;
+}
+
+.status-row:last-child {
+    border-bottom: none;
+}
+
+.status-value {
+    font-weight: 600;
+}
+
+.table-panel {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    overflow-x: auto;
+    box-shadow: 0 3px 12px rgba(0,0,0,.04);
+}
+
+.table-panel h3 {
+    margin-bottom: 18px;
+    font-size: 16px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+}
+
+th, td {
+    text-align: left;
+    padding: 13px 12px;
+    border-bottom: 1px solid #edf0f5;
+    font-size: 12px;
+}
+
+th {
+    color: #64748b;
+    background: #f8fafc;
+}
+
+.empty {
+    text-align: center;
+    padding: 25px;
+    color: #718096;
+}
+
+.note {
+    margin-top: 15px;
+    font-size: 11px;
+    color: #718096;
+}
+
+@media(max-width: 1100px) {
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 700px) {
+    .sidebar {
+        width: 100%;
+        position: relative;
+        padding: 15px;
+    }
+
+    .logo {
+        margin-bottom: 15px;
+    }
+
+    .sidebar nav {
+        display: flex;
+        overflow-x: auto;
+        gap: 5px;
+    }
+
+    .sidebar a {
+        white-space: nowrap;
+        padding: 10px;
+        margin: 0;
+    }
+
+    .layout {
+        display: block;
+    }
+
+    .main {
+        margin-left: 0;
+        width: 100%;
+        padding: 18px;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .summary-card {
+        padding: 15px;
+    }
+
+    .summary-card h2 {
+        font-size: 17px;
+    }
+
+    .header h1 {
+        font-size: 21px;
+    }
+}
+
+@media(max-width: 380px) {
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media print {
+    .sidebar, .actions, .filter-box {
+        display: none !important;
+    }
+
+    .main {
+        margin: 0;
+        width: 100%;
+        padding: 0;
+    }
+
+    body {
+        background: white;
+    }
+
+    .panel, .summary-card, .table-panel {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="logo">SMART <span>LEND</span></div>
+
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="customers.html">Customers</a>
+            <a href="loans.html">Loans</a>
+            <a href="repayments.html">Repayments</a>
+            <a href="transactions.html">Transactions</a>
+            <a href="reports.html" class="active">Reports</a>
+            <a href="settings.html">Settings</a>
+            <a href="logout.html">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+
+        <div class="header">
+            <div>
+                <h1>Business Reports</h1>
+                <p>Monitor lending performance and business activity.</p>
+            </div>
+
+            <div class="actions">
+                <button class="primary-btn" onclick="exportReport()">Export CSV</button>
+                <button class="dark-btn" onclick="window.print()">Print Report</button>
+            </div>
+        </div>
+
+        <section class="filter-box">
+            <div class="filter-group">
+                <label>Start Date</label>
+                <input type="date" id="startDate">
+            </div>
+
+            <div class="filter-group">
+                <label>End Date</label>
+                <input type="date" id="endDate">
+            </div>
+
+            <div class="filter-group">
+                <label>Report Type</label>
+                <select id="reportType">
+                    <option value="all">All Reports</option>
+                    <option value="loans">Loans Issued</option>
+                    <option value="repayments">Repayments</option>
+                </select>
+            </div>
+
+            <button class="primary-btn" onclick="generateReport()">Generate</button>
+            <button class="dark-btn" onclick="resetFilters()">Reset</button>
+        </section>
+
+        <section class="summary-grid">
+
+            <div class="summary-card blue">
+                <p>Total Loans Issued</p>
+                <h2 id="totalDisbursed">UGX 0</h2>
+            </div>
+
+            <div class="summary-card green">
+                <p>Total Repayments Collected</p>
+                <h2 id="totalCollected">UGX 0</h2>
+            </div>
+
+            <div class="summary-card orange">
+                <p>Outstanding Balance</p>
+                <h2 id="outstanding">UGX 0</h2>
+            </div>
+
+            <div class="summary-card red">
+                <p>Overdue Loans</p>
+                <h2 id="overdue">0</h2>
+            </div>
+
+        </section>
+
+        <section class="content-grid">
+
+            <div class="panel">
+                <h3>Monthly Lending Activity</h3>
+
+                <div class="chart" id="monthlyChart"></div>
+
+                <div class="chart-legend">
+                    <span><i class="dot" style="background:#0878d1"></i>Loans issued</span>
+                    <span><i class="dot" style="background:#16a36a"></i>Repayments</span>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Loan Portfolio Summary</h3>
+
+                <div class="status-row">
+                    <span>Total Customers</span>
+                    <span class="status-value" id="customerCount">0</span>
+                </div>
+
+                <div class="status-row">
+                    <span>Total Loans</span>
+                    <span class="status-value" id="loanCount">0</span>
+                </div>
+
+                <div class="status-row">
+                    <span>Active Loans</span>
+                    <span class="status-value" id="activeLoans">0</span>
+                </div>
+
+                <div class="status-row">
+                    <span>Completed Loans</span>
+                    <span class="status-value" id="completedLoans">0</span>
+                </div>
+
+                <div class="status-row">
+                    <span>Overdue Loans</span>
+                    <span class="status-value" id="overdueCount">0</span>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="table-panel">
+            <h3>Loan Performance Report</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Loan ID</th>
+                        <th>Customer</th>
+                        <th>Principal</th>
+                        <th>Amount Paid</th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="loanReportTable">
+                    <tr>
+                        <td colspan="6" class="empty">No loan records available.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="note">
+                Reports are generated from records saved in this browser.
+                Outstanding balance is calculated from the current loan records.
+                Overdue loans are identified using a dueDate field, when available.
+            </p>
+        </section>
+
+    </main>
+</div>
+
+<script>
+"use strict";
+
+/* ================================
+   LOAD SAVED BUSINESS DATA
+================================ */
+
+function getData(key) {
+    try {
+        return JSON.parse(localStorage.getItem(key)) || [];
+    } catch (error) {
+        console.error("Could not read " + key, error);
+        return [];
+    }
+}
+
+let customers = [];
+let loans = [];
+let repayments = [];
+
+let filteredLoans = [];
+let filteredRepayments = [];
+
+function money(amount) {
+    return "UGX " + Number(amount || 0).toLocaleString("en-UG");
+}
+
+function getLoanBalance(loan) {
+    if (loan.balance !== undefined && loan.balance !== null) {
+        return Math.max(0, Number(loan.balance) || 0);
+    }
+
+    return Math.max(
+        0,
+        (Number(loan.principal) || 0) -
+        (Number(loan.amountPaid) || 0)
+    );
+}
+
+function isCompleted(loan) {
+    return getLoanBalance(loan) <= 0 ||
+        String(loan.status || "").toLowerCase() === "completed";
+}
+
+function isOverdue(loan) {
+    if (isCompleted(loan) || !loan.dueDate) return false;
+
+    const due = new Date(loan.dueDate + "T23:59:59");
+    return !isNaN(due.getTime()) && due < new Date();
+}
+
+/* ================================
+   INITIALISE REPORTS
+================================ */
+
+function initialiseReports() {
+    customers = getData("smartLendCustomers");
+    loans = getData("smartLendLoans");
+    repayments = getData("smartLendRepayments");
+
+    generateReport();
+}
+
+/* ================================
+   GENERATE REPORT
+================================ */
+
+function generateReport() {
+    customers = getData("smartLendCustomers");
+    loans = getData("smartLendLoans");
+    repayments = getData("smartLendRepayments");
+
+    const start = document.getElementById("startDate").value;
+    const end = document.getElementById("endDate").value;
+    const type = document.getElementById("reportType").value;
+
+    if (start && end && start > end) {
+        alert("Start date cannot be later than end date.");
+        return;
+    }
+
+    filteredLoans = loans.filter(loan => {
+        const date = String(loan.issueDate || "").slice(0, 10);
+
+        if (type === "repayments") return false;
+        if (start && (!date || date < start)) return false;
+        if (end && (!date || date > end)) return false;
+
+        return true;
+    });
+
+    filteredRepayments = repayments.filter(payment => {
+        const date = String(payment.date || "").slice(0, 10);
+
+        if (type === "loans") return false;
+        if (start && (!date || date < start)) return false;
+        if (end && (!date || date > end)) return false;
+
+        return true;
+    });
+
+    updateSummary(start, end);
+    updateLoanTable();
+    updateMonthlyChart();
+}
+
+/* ================================
+   UPDATE SUMMARY CARDS
+================================ */
+
+function updateSummary(start, end) {
+    const disbursed = filteredLoans.reduce(
+        (sum, loan) => sum + (Number(loan.principal) || 0), 0
+    );
+
+    const collected = filteredRepayments.reduce(
+        (sum, payment) => sum + (Number(payment.amount) || 0), 0
+    );
+
+    // Portfolio balance is based on all current loans,
+    // not only loans issued during the selected date range.
+    const totalOutstanding = loans.reduce(
+        (sum, loan) => sum + getLoanBalance(loan), 0
+    );
+
+    const overdueLoans = loans.filter(isOverdue);
+
+    document.getElementById("totalDisbursed").textContent = money(disbursed);
+    document.getElementById("totalCollected").textContent = money(collected);
+    document.getElementById("outstanding").textContent = money(totalOutstanding);
+    document.getElementById("overdue").textContent = overdueLoans.length;
+
+    document.getElementById("customerCount").textContent = customers.length;
+    document.getElementById("loanCount").textContent = loans.length;
+
+    document.getElementById("activeLoans").textContent =
+        loans.filter(loan => !isCompleted(loan)).length;
+
+    document.getElementById("completedLoans").textContent =
+        loans.filter(isCompleted).length;
+
+    document.getElementById("overdueCount").textContent =
+        overdueLoans.length;
+}
+
+/* ================================
+   LOAN PERFORMANCE TABLE
+================================ */
+
+function updateLoanTable() {
+    const table = document.getElementById("loanReportTable");
+
+    if (filteredLoans.length === 0) {
+        table.innerHTML = `
+            <tr>
+                <td colspan="6" class="empty">
+                    No loans found for the selected filters.
+                </td>
+            </tr>`;
+        return;
+    }
+
+    table.innerHTML = filteredLoans.map(loan => {
+        const principal = Number(loan.principal) || 0;
+        const paid = Number(loan.amountPaid) || 0;
+        const balance = getLoanBalance(loan);
+
+        let status = loan.status || "Active";
+
+        if (isOverdue(loan)) {
+            status = "Overdue";
+        } else if (isCompleted(loan)) {
+            status = "Completed";
+        }
+
+        return `
+            <tr>
+                <td>${escapeHTML(loan.id || "-")}</td>
+                <td>${escapeHTML(loan.customerName || "-")}</td>
+                <td>${money(principal)}</td>
+                <td>${money(paid)}</td>
+                <td>${money(balance)}</td>
+                <td>${escapeHTML(status)}</td>
+            </tr>
+        `;
+    }).join("");
+}
+
+/* ================================
+   MONTHLY CHART
+================================ */
+
+function updateMonthlyChart() {
+    const chart = document.getElementById("monthlyChart");
+
+    const months = [];
+
+    for (let i = 5; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(1);
+        date.setMonth(date.getMonth() - i);
+
+        months.push({
+            key: date.getFullYear() + "-" +
+                String(date.getMonth() + 1).padStart(2, "0"),
+            label: date.toLocaleString("en", { month: "short" }),
+            loans: 0,
+            repayments: 0
+        });
+    }
+
+    months.forEach(month => {
+        month.loans = loans
+            .filter(loan => String(loan.issueDate || "").startsWith(month.key))
+            .reduce((sum, loan) => sum + (Number(loan.principal) || 0), 0);
+
+        month.repayments = repayments
+            .filter(payment => String(payment.date || "").startsWith(month.key))
+            .reduce((sum, payment) => sum + (Number(payment.amount) || 0), 0);
+    });
+
+    const maxValue = Math.max(
+        1,
+        ...months.flatMap(month => [month.loans, month.repayments])
+    );
+
+    chart.innerHTML = months.map(month => {
+        const loanHeight = (month.loans / maxValue) * 150;
+        const repaymentHeight = (month.repayments / maxValue) * 150;
+
+        return `
+            <div class="bar-item">
+                <div style="display:flex;align-items:end;gap:4px;width:100%;height:170px;justify-content:center">
+                    <div class="bar"
+                        title="Loans: ${money(month.loans)}"
+                        style="height:${loanHeight}px"></div>
+
+                    <div class="bar collection"
+                        title="Repayments: ${money(month.repayments)}"
+                        style="height:${repaymentHeight}px"></div>
+                </div>
+                <span class="bar-label">${month.label}</span>
+            </div>
+        `;
+    }).join("");
+}
+
+/* ================================
+   EXPORT REPORT TO CSV
+================================ */
+
+function exportReport() {
+    const rows = [
+        ["Loan ID", "Customer", "Principal", "Amount Paid", "Balance", "Status"]
+    ];
+
+    filteredLoans.forEach(loan => {
+        let status = loan.status || "Active";
+
+        if (isOverdue(loan)) status = "Overdue";
+        else if (isCompleted(loan)) status = "Completed";
+
+        rows.push([
+            loan.id || "",
+            loan.customerName || "",
+            Number(loan.principal) || 0,
+            Number(loan.amountPaid) || 0,
+            getLoanBalance(loan),
+            status
+        ]);
+    });
+
+    const csv = rows.map(row =>
+        row.map(value =>
+            '"' + String(value).replace(/"/g, '""') + '"'
+        ).join(",")
+    ).join("\n");
+
+    const blob = new Blob([csv], {
+        type: "text/csv;charset=utf-8;"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "smart-lend-loan-report.csv";
+    link.click();
+
+    URL.revokeObjectURL(url);
+}
+
+/* ================================
+   RESET FILTERS
+================================ */
+
+function resetFilters() {
+    document.getElementById("startDate").value = "";
+    document.getElementById("endDate").value = "";
+    document.getElementById("reportType").value = "all";
+
+    generateReport();
+}
+
+/* ================================
+   SAFE HTML DISPLAY
+================================ */
+
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    })[character]);
+}
+
+/* ================================
+   START REPORTS
+================================ */
+
+document.addEventListener("DOMContentLoaded", initialiseReports);
+
+</script>
+
+</body>
+</html>

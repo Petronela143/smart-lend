@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Money Lending | Business Dashboard</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background: #082b55;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 25px 15px;
+    overflow-y: auto;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    padding: 10px;
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 14px;
+    margin: 7px 0;
+    border-radius: 7px;
+    transition: 0.3s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #1479e8;
+}
+
+.main {
+    margin-left: 250px;
+    padding: 25px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 15px;
+}
+
+.topbar h1 {
+    font-size: 27px;
+}
+
+.admin {
+    background: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+}
+
+.welcome {
+    margin-bottom: 25px;
+}
+
+.welcome p {
+    color: #64748b;
+    margin-top: 7px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+}
+
+.card p {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.card h2 {
+    font-size: 25px;
+    color: #0b4da2;
+}
+
+.card span {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.card-icon {
+    font-size: 25px;
+    margin-bottom: 12px;
+}
+
+.section {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    overflow-x: auto;
+}
+
+.section h3 {
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+th {
+    background: #f8fafc;
+    color: #475569;
+}
+
+.status {
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.active-status {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.overdue-status {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.paid-status {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.quick-actions a {
+    background: #0866cc;
+    color: white;
+    padding: 13px 20px;
+    border-radius: 7px;
+    text-decoration: none;
+}
+
+.quick-actions a:hover {
+    background: #034a99;
+}
+
+@media(max-width: 1100px) {
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 700px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .sidebar a {
+        display: inline-block;
+        padding: 10px;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .topbar h1 {
+        font-size: 21px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+    <div class="logo">💰 SMART LEND</div>
+
+    <a href="dashboard.html" class="active">📊 Dashboard</a>
+    <a href="customers.html">👥 Customers</a>
+    <a href="loans.html">💵 Loans</a>
+    <a href="repayments.html">💳 Repayments</a>
+    <a href="transactions.html">📑 Transactions</a>
+    <a href="reports.html">📈 Reports</a>
+    <a href="settings.html">⚙ Settings</a>
+    <a href="logout.html">🚪 Logout</a>
+
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+    <div class="topbar">
+        <h1>Business Dashboard</h1>
+        <div class="admin">👤 Administrator</div>
+    </div>
+
+    <div class="welcome">
+        <h2>Welcome Back!</h2>
+        <p>Here is an overview of your lending business.</p>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="cards">
+
+        <div class="card">
+            <div class="card-icon">💰</div>
+            <p>Total Loans Issued</p>
+            <h2 id="totalLoans">UGX 0</h2>
+            <span>All loans disbursed</span>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">💵</div>
+            <p>Total Collections</p>
+            <h2 id="collections">UGX 0</h2>
+            <span>Repayments received</span>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">📉</div>
+            <p>Outstanding Balance</p>
+            <h2 id="outstanding">UGX 0</h2>
+            <span>Unpaid loan balance</span>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">👥</div>
+            <p>Total Customers</p>
+            <h2 id="customers">0</h2>
+            <span>Registered customers</span>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">📋</div>
+            <p>Active Loans</p>
+            <h2 id="activeLoans">0</h2>
+            <span>Currently running loans</span>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">⚠️</div>
+            <p>Overdue Loans</p>
+            <h2 id="overdueLoans">0</h2>
+            <span>Loans past due date</span>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">✅</div>
+            <p>Fully Paid Loans</p>
+            <h2 id="paidLoans">0</h2>
+            <span>Completed loans</span>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">📅</div>
+            <p>Today's Collections</p>
+            <h2 id="todayCollections">UGX 0</h2>
+            <span>Payments received today</span>
+        </div>
+
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="section">
+        <h3>Quick Actions</h3>
+
+        <div class="quick-actions">
+            <a href="customers.html">+ Add Customer</a>
+            <a href="loans.html">+ Issue Loan</a>
+            <a href="repayments.html">+ Record Repayment</a>
+            <a href="reports.html">View Reports</a>
+        </div>
+    </div>
+
+    <!-- RECENT LOANS -->
+    <div class="section">
+        <h3>Recent Loans</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Loan ID</th>
+                    <th>Customer</th>
+                    <th>Loan Amount</th>
+                    <th>Balance</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody id="loanTable"></tbody>
+        </table>
+    </div>
+
+    <!-- RECENT REPAYMENTS -->
+    <div class="section">
+        <h3>Recent Repayments</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Customer</th>
+                    <th>Amount Paid</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody id="repaymentTable"></tbody>
+        </table>
+    </div>
+
+</main>
+
+<script>
+// CURRENCY FORMAT
+function money(amount) {
+    return "UGX " + Number(amount).toLocaleString("en-UG");
+}
+
+// CALCULATE DASHBOARD FIGURES
+function loadDashboard() {
+
+    const totalLoans = loans.reduce(
+        (sum, loan) => sum + loan.amount, 0
+    );
+
+    const outstanding = loans.reduce(
+        (sum, loan) => sum + loan.balance, 0
+    );
+
+    const collections = repayments.reduce(
+        (sum, payment) => sum + payment.amount, 0
+    );
+
+    const today = new Date().toISOString().slice(0,10);
+
+    const todayTotal = repayments
+        .filter(payment => payment.date === today)
+        .reduce((sum, payment) => sum + payment.amount, 0);
+
+    const active = loans.filter(
+        loan => loan.balance > 0 &&
+        loan.dueDate >= today
+    ).length;
+
+    const overdue = loans.filter(
+        loan => loan.balance > 0 &&
+        loan.dueDate < today
+    ).length;
+
+    const paid = loans.filter(
+        loan => loan.balance === 0
+    ).length;
+
+    document.getElementById("totalLoans").textContent =
+        money(totalLoans);
+
+    document.getElementById("collections").textContent =
+        money(collections);
+
+    document.getElementById("outstanding").textContent =
+        money(outstanding);
+
+    document.getElementById("customers").textContent =
+        customers.length;
+
+    document.getElementById("activeLoans").textContent =
+        active;
+
+    document.getElementById("overdueLoans").textContent =
+        overdue;
+
+    document.getElementById("paidLoans").textContent =
+        paid;
+
+    document.getElementById("todayCollections").textContent =
+        money(todayTotal);
+
+    // DISPLAY LOANS
+    document.getElementById("loanTable").innerHTML =
+        loans.map(loan => {
+
+            let statusClass =
+                loan.status === "Paid"
+                ? "paid-status"
+                : loan.balance > 0 && loan.dueDate < today
+                ? "overdue-status"
+                : "active-status";
+
+            let status =
+                loan.balance === 0
+                ? "Paid"
+                : loan.dueDate < today
+                ? "Overdue"
+                : "Active";
+
+            return `
+                <tr>
+                    <td>${loan.id}</td>
+                    <td>${loan.customer}</td>
+                    <td>${money(loan.amount)}</td>
+                    <td>${money(loan.balance)}</td>
+                    <td>
+                        <span class="status ${statusClass}">
+                            ${status}
+                        </span>
+                    </td>
+                </tr>
+            `;
+
+        }).join("");
+
+    // DISPLAY REPAYMENTS
+    document.getElementById("repaymentTable").innerHTML =
+        repayments.map(payment => `
+            <tr>
+                <td>${payment.id}</td>
+                <td>${payment.customer}</td>
+                <td>${money(payment.amount)}</td>
+                <td>${payment.date}</td>
+            </tr>
+        `).join("");
+}
+
+// LOAD DASHBOARD
+loadDashboard();
+
+</script>
+
+</body>
+</html>

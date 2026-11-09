@@ -1,0 +1,1024 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smart Lend | Loan Management</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    background: #082b55;
+    color: white;
+    padding: 25px 15px;
+    overflow-y: auto;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    padding: 10px;
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 14px;
+    margin: 7px 0;
+    border-radius: 7px;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #1479e8;
+}
+
+.main {
+    margin-left: 250px;
+    padding: 25px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    font-size: 27px;
+}
+
+.admin {
+    background: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.summary-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.05);
+}
+
+.summary-card p {
+    color: #64748b;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.summary-card h2 {
+    color: #0759b5;
+    font-size: 23px;
+}
+
+.panel {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.04);
+}
+
+.panel h3 {
+    margin-bottom: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 17px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.field label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.field input,
+.field select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    outline: none;
+    background: white;
+}
+
+.field input:focus,
+.field select:focus {
+    border-color: #1479e8;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+.calculation {
+    background: #eff6ff;
+    padding: 18px;
+    border-radius: 9px;
+    margin-top: 20px;
+}
+
+.calculation h4 {
+    color: #0759b5;
+    margin-bottom: 12px;
+}
+
+.calculation p {
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+.calculation strong {
+    color: #0759b5;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+button {
+    border: none;
+    padding: 12px 18px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.save-btn {
+    background: #0866cc;
+    color: white;
+}
+
+.cancel-btn {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.view-btn {
+    background: #dbeafe;
+    color: #1d4ed8;
+    padding: 8px 12px;
+}
+
+.delete-btn {
+    background: #fee2e2;
+    color: #dc2626;
+    padding: 8px 12px;
+}
+
+.search-box {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    margin-bottom: 15px;
+}
+
+.filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.filters select {
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    background: white;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 950px;
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 14px;
+}
+
+th {
+    background: #f8fafc;
+    color: #475569;
+}
+
+.status {
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.active-status {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.overdue-status {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.paid-status {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.empty {
+    text-align: center;
+    padding: 25px;
+    color: #64748b;
+}
+
+@media(max-width: 1100px) {
+    .summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 700px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .sidebar a {
+        display: inline-block;
+        padding: 10px;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .header h1 {
+        font-size: 21px;
+    }
+
+    .summary,
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full {
+        grid-column: auto;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+    <div class="logo">💰 SMART LEND</div>
+
+    <a href="dashboard.html">📊 Dashboard</a>
+    <a href="customers.html">👥 Customers</a>
+    <a href="loans.html" class="active">💵 Loans</a>
+    <a href="repayments.html">💳 Repayments</a>
+    <a href="transactions.html">📑 Transactions</a>
+    <a href="reports.html">📈 Reports</a>
+    <a href="settings.html">⚙ Settings</a>
+    <a href="logout.html">🚪 Logout</a>
+
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+    <div class="header">
+        <h1>Loan Management</h1>
+        <div class="admin">👤 Administrator</div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="summary">
+
+        <div class="summary-card">
+            <p>Total Loans Issued</p>
+            <h2 id="totalLoans">UGX 0</h2>
+        </div>
+
+        <div class="summary-card">
+            <p>Outstanding Balance</p>
+            <h2 id="outstanding">UGX 0</h2>
+        </div>
+
+        <div class="summary-card">
+            <p>Active Loans</p>
+            <h2 id="activeLoans">0</h2>
+        </div>
+
+        <div class="summary-card">
+            <p>Overdue Loans</p>
+            <h2 id="overdueLoans">0</h2>
+        </div>
+
+    </div>
+
+    <!-- LOAN FORM -->
+    <div class="panel">
+
+        <h3>Issue New Loan</h3>
+
+        <form id="loanForm">
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label>Loan Reference</label>
+                    <input type="text" id="loanId" readonly>
+                </div>
+
+                <div class="field">
+                    <label>Select Customer *</label>
+                    <select id="customerId" required>
+                        <option value="">Select Customer</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Loan Amount (UGX) *</label>
+                    <input type="number" id="principal"
+                    min="1" step="1"
+                    placeholder="Enter loan amount" required>
+                </div>
+
+                <div class="field">
+                    <label>Annual Interest Rate (%) *</label>
+                    <input type="number" id="interestRate"
+                    min="0" step="0.01"
+                    placeholder="Enter annual interest rate" required>
+                </div>
+
+                <div class="field">
+                    <label>Repayment Period (Months) *</label>
+                    <input type="number" id="termMonths"
+                    min="1" max="600" step="1"
+                    placeholder="Enter months" required>
+                </div>
+
+                <div class="field">
+                    <label>Loan Issue Date *</label>
+                    <input type="date" id="issueDate" required>
+                </div>
+
+            </div>
+
+            <!-- LOAN CALCULATION -->
+            <div class="calculation">
+
+                <h4>Loan Calculation Preview</h4>
+
+                <p>Principal: <strong id="previewPrincipal">UGX 0</strong></p>
+
+                <p>Total Interest: <strong id="previewInterest">UGX 0</strong></p>
+
+                <p>Total Repayment: <strong id="previewTotal">UGX 0</strong></p>
+
+                <p>Monthly Instalment: <strong id="previewMonthly">UGX 0</strong></p>
+
+                <p>Loan Due Date: <strong id="previewDueDate">-</strong></p>
+
+            </div>
+
+            <div class="buttons">
+
+                <button type="submit" class="save-btn">
+                    Issue Loan
+                </button>
+
+                <button type="reset" class="cancel-btn"
+                id="clearButton">
+                    Clear Form
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- LOAN RECORDS -->
+    <div class="panel">
+
+        <h3>Loan Records</h3>
+
+        <input type="search"
+        id="searchLoan"
+        class="search-box"
+        placeholder="Search by loan ID or customer name...">
+
+        <div class="filters">
+
+            <select id="statusFilter">
+                <option value="All">All Loan Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Overdue">Overdue</option>
+                <option value="Paid">Paid</option>
+            </select>
+
+        </div>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Loan ID</th>
+                        <th>Customer</th>
+                        <th>Principal</th>
+                        <th>Interest</th>
+                        <th>Total Payable</th>
+                        <th>Balance</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="loanTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</main>
+
+<script>
+
+"use strict";
+
+// LOAD DATABASE RECORDS
+
+let customers = JSON.parse(
+    localStorage.getItem("smartLendCustomers") || "[]"
+);
+
+let loans = JSON.parse(
+    localStorage.getItem("smartLendLoans") || "[]"
+);
+
+// DATE HELPERS
+
+function today() {
+    const date = new Date();
+    const offset = date.getTimezoneOffset() * 60000;
+
+    return new Date(date.getTime() - offset)
+        .toISOString().slice(0, 10);
+}
+
+function addMonths(dateString, months) {
+
+    const [year, month, day] = dateString
+        .split("-").map(Number);
+
+    const result = new Date(year, month - 1, 1);
+
+    result.setMonth(result.getMonth() + months);
+
+    const lastDay = new Date(
+        result.getFullYear(),
+        result.getMonth() + 1,
+        0
+    ).getDate();
+
+    result.setDate(Math.min(day, lastDay));
+
+    return [
+        result.getFullYear(),
+        String(result.getMonth() + 1).padStart(2, "0"),
+        String(result.getDate()).padStart(2, "0")
+    ].join("-");
+}
+
+// CURRENCY FORMAT
+
+function money(amount) {
+    return "UGX " + Number(amount).toLocaleString("en-UG", {
+        maximumFractionDigits: 2
+    });
+}
+
+// GENERATE LOAN REFERENCE
+
+function generateLoanId() {
+
+    const numbers = loans.map(loan =>
+        Number(loan.id.replace("LN", ""))
+    );
+
+    const next = Math.max(0, ...numbers) + 1;
+
+    return "LN" + String(next).padStart(4, "0");
+}
+
+// SAVE DATABASE
+
+function saveLoans() {
+    localStorage.setItem(
+        "smartLendLoans",
+        JSON.stringify(loans)
+    );
+}
+
+// CUSTOMER DROPDOWN
+
+function loadCustomers() {
+
+    const select = document.getElementById("customerId");
+
+    select.innerHTML =
+        '<option value="">Select Customer</option>';
+
+    customers.forEach(customer => {
+
+        const option = document.createElement("option");
+
+        option.value = customer.id;
+
+        option.textContent =
+            customer.fullName + " - " + customer.id;
+
+        select.appendChild(option);
+
+    });
+
+}
+
+// GET LOAN CALCULATIONS
+
+function calculateLoan(principal, rate, months) {
+
+    const interest =
+        principal * (rate / 100) * (months / 12);
+
+    const total = principal + interest;
+
+    const monthly = total / months;
+
+    return {
+        interest,
+        total,
+        monthly
+    };
+
+}
+
+// GET CURRENT LOAN STATUS
+
+function getStatus(loan) {
+
+    if (Number(loan.balance) <= 0) {
+        return "Paid";
+    }
+
+    if (loan.dueDate < today()) {
+        return "Overdue";
+    }
+
+    return "Active";
+
+}
+
+// PREVIEW CALCULATION
+
+function updatePreview() {
+
+    const principal =
+        Number(document.getElementById("principal").value) || 0;
+
+    const rate =
+        Number(document.getElementById("interestRate").value) || 0;
+
+    const months =
+        Number(document.getElementById("termMonths").value) || 0;
+
+    const issueDate =
+        document.getElementById("issueDate").value;
+
+    let result = calculateLoan(principal, rate, months);
+
+    document.getElementById("previewPrincipal").textContent =
+        money(principal);
+
+    document.getElementById("previewInterest").textContent =
+        money(result.interest);
+
+    document.getElementById("previewTotal").textContent =
+        money(result.total);
+
+    document.getElementById("previewMonthly").textContent =
+        months > 0 ? money(result.monthly) : "UGX 0";
+
+    document.getElementById("previewDueDate").textContent =
+        issueDate && months > 0
+        ? addMonths(issueDate, months)
+        : "-";
+
+}
+
+// AUTOMATIC PREVIEW
+
+["principal", "interestRate", "termMonths", "issueDate"]
+.forEach(id => {
+
+    document.getElementById(id)
+    .addEventListener("input", updatePreview);
+
+});
+
+// ISSUE NEW LOAN
+
+document.getElementById("loanForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const customerId =
+        document.getElementById("customerId").value;
+
+    const customer = customers.find(
+        c => c.id === customerId
+    );
+
+    if (!customer) {
+        alert("Please register or select a valid customer.");
+        return;
+    }
+
+    const principal =
+        Number(document.getElementById("principal").value);
+
+    const rate =
+        Number(document.getElementById("interestRate").value);
+
+    const months =
+        Number(document.getElementById("termMonths").value);
+
+    const issueDate =
+        document.getElementById("issueDate").value;
+
+    if (
+        !Number.isFinite(principal) ||
+        !Number.isFinite(rate) ||
+        !Number.isInteger(months) ||
+        principal <= 0 ||
+        rate < 0 ||
+        months < 1 ||
+        months > 600 ||
+        !issueDate ||
+        issueDate > today()
+    ) {
+        alert("Please enter valid loan details and issue date.");
+        return;
+    }
+
+    const result = calculateLoan(principal, rate, months);
+
+    const loan = {
+
+        id: generateLoanId(),
+
+        customerId: customer.id,
+
+        customerName: customer.fullName,
+
+        principal: principal,
+
+        interestRate: rate,
+
+        termMonths: months,
+
+        interest: result.interest,
+
+        totalPayable: result.total,
+
+        monthlyInstallment: result.monthly,
+
+        amountPaid: 0,
+
+        balance: result.total,
+
+        issueDate: issueDate,
+
+        dueDate: addMonths(issueDate, months),
+
+        status: "Active",
+
+        createdAt: today()
+
+    };
+
+    const confirmed = confirm(
+        "Issue loan of " + money(principal) +
+        " to " + customer.fullName +
+        "?\nTotal repayment: " + money(result.total)
+    );
+
+    if (!confirmed) return;
+
+    loans.push(loan);
+
+    saveLoans();
+
+    alert("Loan issued successfully!\nLoan ID: " + loan.id);
+
+    this.reset();
+
+    document.getElementById("issueDate").value = today();
+
+    document.getElementById("loanId").value = generateLoanId();
+
+    updatePreview();
+
+    displayLoans();
+
+});
+
+// DISPLAY LOANS
+
+function displayLoans() {
+
+    const search =
+        document.getElementById("searchLoan")
+        .value.toLowerCase();
+
+    const filter =
+        document.getElementById("statusFilter").value;
+
+    const filtered = loans.filter(loan => {
+
+        const status = getStatus(loan);
+
+        const matchesSearch =
+            loan.id.toLowerCase().includes(search) ||
+            loan.customerName.toLowerCase().includes(search);
+
+        const matchesStatus =
+            filter === "All" || status === filter;
+
+        return matchesSearch && matchesStatus;
+
+    });
+
+    const table = document.getElementById("loanTable");
+
+    if (filtered.length === 0) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="9" class="empty">
+                    No loan records found.
+                </td>
+            </tr>
+        `;
+
+    } else {
+
+        table.innerHTML = filtered.map(loan => {
+
+            const status = getStatus(loan);
+
+            const statusClass =
+                status === "Paid"
+                ? "paid-status"
+                : status === "Overdue"
+                ? "overdue-status"
+                : "active-status";
+
+            return `
+
+                <tr>
+
+                    <td>${escapeHTML(loan.id)}</td>
+
+                    <td>${escapeHTML(loan.customerName)}</td>
+
+                    <td>${money(loan.principal)}</td>
+
+                    <td>${money(loan.interest)}</td>
+
+                    <td>${money(loan.totalPayable)}</td>
+
+                    <td>${money(loan.balance)}</td>
+
+                    <td>${escapeHTML(loan.dueDate)}</td>
+
+                    <td>
+                        <span class="status ${statusClass}">
+                            ${status}
+                        </span>
+                    </td>
+
+                    <td>
+                        <button class="view-btn"
+                        onclick="viewLoan('${loan.id}')">
+                            View
+                        </button>
+
+                        <button class="delete-btn"
+                        onclick="deleteLoan('${loan.id}')">
+                            Delete
+                        </button>
+                    </td>
+
+                </tr>
+
+            `;
+
+        }).join("");
+
+    }
+
+    updateSummary();
+
+}
+
+// UPDATE SUMMARY CARDS
+
+function updateSummary() {
+
+    const total = loans.reduce(
+        (sum, loan) => sum + Number(loan.principal), 0
+    );
+
+    const outstanding = loans.reduce(
+        (sum, loan) => sum + Number(loan.balance), 0
+    );
+
+    const active = loans.filter(
+        loan => getStatus(loan) === "Active"
+    ).length;
+
+    const overdue = loans.filter(
+        loan => getStatus(loan) === "Overdue"
+    ).length;
+
+    document.getElementById("totalLoans").textContent =
+        money(total);
+
+    document.getElementById("outstanding").textContent =
+        money(outstanding);
+
+    document.getElementById("activeLoans").textContent =
+        active;
+
+    document.getElementById("overdueLoans").textContent =
+        overdue;
+
+}
+
+// VIEW LOAN DETAILS
+
+function viewLoan(id) {
+
+    const loan = loans.find(l => l.id === id);
+
+    if (!loan) return;
+
+    alert(
+        "LOAN DETAILS\n\n" +
+        "Loan ID: " + loan.id + "\n" +
+        "Customer: " + loan.customerName + "\n" +
+        "Principal: " + money(loan.principal) + "\n" +
+        "Interest Rate: " + loan.interestRate + "% annually\n" +
+        "Interest: " + money(loan.interest) + "\n" +
+        "Total Payable: " + money(loan.totalPayable) + "\n" +
+        "Monthly Instalment: " + money(loan.monthlyInstallment) + "\n" +
+        "Amount Paid: " + money(loan.amountPaid) + "\n" +
+        "Outstanding: " + money(loan.balance) + "\n" +
+        "Issue Date: " + loan.issueDate + "\n" +
+        "Due Date: " + loan.dueDate + "\n" +
+        "Status: " + getStatus(loan)
+    );
+
+}
+
+// DELETE LOAN
+
+function deleteLoan(id) {
+
+    const loan = loans.find(l => l.id === id);
+
+    if (!loan) return;
+
+    // Do not delete loans that have repayment records.
+    const repayments = JSON.parse(
+        localStorage.getItem("smartLendRepayments") || "[]"
+    );
+
+    const hasRepayments = repayments.some(
+        payment => payment.loanId === id
+    );
+
+    if (hasRepayments || Number(loan.amountPaid) > 0) {
+        alert("This loan has repayment records and cannot be deleted.");
+        return;
+    }
+
+    if (!confirm("Delete loan " + id + "?")) return;
+
+    loans = loans.filter(l => l.id !== id);
+
+    saveLoans();
+
+    document.getElementById("loanId").value = generateLoanId();
+
+    displayLoans();
+
+}
+
+// SEARCH
+
+document.getElementById("searchLoan")
+.addEventListener("input", displayLoans);
+
+document.getElementById("statusFilter")
+.addEventListener("change", displayLoans);
+
+// ESCAPE HTML
+function escapeHTML(value) {
+
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[char]);
+
+}
+
+// INITIALIZE PAGE
+
+document.getElementById("loanId").value =
+    generateLoanId();
+
+document.getElementById("issueDate").value = today();
+
+loadCustomers();
+
+updatePreview();
+
+displayLoans();
+
+</script>
+
+</body>
+</html>

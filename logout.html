@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Lend | Logout</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .logout-container {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .logout-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            color: white;
+            background: #dc3545;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .logout-btn:hover {
+            background: #b02a37;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="logout-container">
+        <h2>Smart Lend</h2>
+        <p>Are you ready to log out?</p>
+
+        <button class="logout-btn" onclick="logoutUser()">
+            🚪 Logout
+        </button>
+    </div>
+
+    <script>
+        function logoutUser() {
+            const confirmLogout = confirm(
+                "Are you sure you want to log out of Smart Lend?"
+            );
+
+            if (confirmLogout) {
+                sessionStorage.removeItem("smartLendLoggedIn");
+                sessionStorage.removeItem("smartLendUserId");
+                sessionStorage.removeItem("smartLendUsername");
+                sessionStorage.removeItem("smartLendFullName");
+                sessionStorage.removeItem("smartLendRole");
+
+                window.location.href = "login.html";
+            }
+        }
+    </script>
+
+</body>
+</html>
